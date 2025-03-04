@@ -1,7 +1,16 @@
 defmodule TermType.Test do
-  defstruct [:id, :text]
+  use GenServer
 
+  defstruct [:id, :text]
+  
   def new do
-    %TermType.Test{id: 1, text: TermType.TextBank.generate_text()} 
+    GenServer.start(__MODULE__, nil)
+  end
+
+  # TODO: 
+  # - make it into a genserver to keep track of auto incrementing ids
+  @impl GenServer
+  def init(_) do
+    {:ok, %TermType.Test{id: 1, text: TermType.TextBank.generate_text()}}
   end
 end
