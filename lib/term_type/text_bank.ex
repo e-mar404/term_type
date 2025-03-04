@@ -1,6 +1,7 @@
 defmodule TermType.TextBank do
   use GenServer
-
+  
+  @total_word_count 1000
   @word_list "./persist/english.words"
   
   def start_link(initial_state \\ nil) do
@@ -29,7 +30,7 @@ defmodule TermType.TextBank do
   def handle_call({:generate_text, word_count}, _from, word_map) do
     text =
       Enum.map(0..word_count, fn _ ->
-        random_index = :rand.uniform(word_count) - 1
+        random_index = :rand.uniform(@total_word_count) - 1
         Map.get(word_map, random_index) 
       end)
       |> Enum.join(" ")
