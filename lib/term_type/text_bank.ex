@@ -2,7 +2,7 @@ defmodule TermType.TextBank do
   use GenServer
   
   @total_word_count 1000
-  @word_list "./persist/english.words"
+  @word_list_path "./persist/english.words"
   
   def start_link(initial_state \\ nil) do
     GenServer.start_link(__MODULE__, initial_state, name: __MODULE__)
@@ -15,7 +15,7 @@ defmodule TermType.TextBank do
   @impl GenServer
   def init(_initial_state \\ nil) do
     word_list =
-      File.stream!(@word_list)
+      File.stream!(@word_list_path)
       |> Stream.map(&String.trim/1)
       |> Stream.with_index() 
       |> Enum.to_list()
