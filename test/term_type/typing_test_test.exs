@@ -4,8 +4,6 @@ defmodule Todo.ListTest do
   test "see if i get the updated state" do
     TermType.TextBank.start_link()
 
-    {text, _map} = TermType.TypingTest.start_link()
-
-    IO.puts(text)
+    IO.inspect(TermType.TypingTest.start_link())
   end
 end
