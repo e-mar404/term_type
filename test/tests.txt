@@ -1,0 +1,13 @@
+What will need to be tested
+
+A typing test will :
+
+- a test will need to keep track of cur_position, letter_map & status_map
+- create a new test either with provided input or auto generated input 
+- a new test will yield a status map with all entries having a status of
+  :background
+- a correct attempt will show as correct on the status map
+- an incorrect attempt will show as incorrect on the status map
+- a backspace input will shown the previous letter as background on the status
+  map
+- when the last input happens return :complete
