@@ -12,6 +12,10 @@ defmodule TermType.TextBank do
     GenServer.call(__MODULE__, {:generate_text, word_count})    
   end
 
+  def to_letter_map(text) do
+    GenServer.call(__MODULE__, {:to_letter_map, text}) 
+  end
+
   @impl GenServer
   def init(_initial_state \\ nil) do
     word_list =
@@ -36,5 +40,17 @@ defmodule TermType.TextBank do
       |> Enum.join(" ")
 
     {:reply, text, word_map}
+  end
+
+  @impl GenServer
+  def handle_call({:to_letter_map, text}, _from, word_map) do
+    letter_list = 
+      String.split(text, "", trim: true)
+      |> Enum.with_index()
+
+    letter_map =
+      for {letter, index} <- letter_list, into: %{}, do: {index, letter}
+
+    {:reply, letter_map, word_map}
   end
 end
