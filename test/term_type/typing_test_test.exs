@@ -48,5 +48,6 @@ defmodule TermType.TypingTestTest do
     updated_status_map = Map.put(context.status_map, 0, :correct)
 
     assert new_test.status_map == updated_status_map
+    assert new_test.cur_index == 1
   end
 end
