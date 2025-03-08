@@ -58,4 +58,12 @@ defmodule TermType.TypingTestTest do
     assert new_test.status_map == updated_status_map
     assert new_test.cur_index == 1
   end
+
+  test "backspace as the first try", context do
+    new_test = TermType.TypingTest.attempt(context.typing_test, "\b")
+    updated_status_map = Map.put(context.status_map, 0, :background)
+
+    assert new_test.status_map == updated_status_map
+    assert new_test.cur_index == 0
+  end
 end

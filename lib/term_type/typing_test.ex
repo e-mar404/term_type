@@ -31,6 +31,7 @@ defmodule TermType.TypingTest do
     correct = Map.get(letter_map, index)  
 
     cond do
+      attempt == "\b" -> {:background, max(index - 1, 0)}
       correct == attempt -> {:correct, index + 1}
       correct != attempt -> {:incorrect, index + 1}
     end 
