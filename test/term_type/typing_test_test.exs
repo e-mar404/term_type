@@ -2,31 +2,22 @@ defmodule TermType.TypingTestTest do
   use ExUnit.Case, async: true
 
   setup do
-    typing_test = TermType.TypingTest.new("type test")
+    test_text = "type test"
 
-    letter_map = %{
-      0 => "t",
-      1 => "y", 
-      2 => "p",
-      3 => "e",
-      4 => " ",
-      5 => "t",
-      6 => "e",
-      7 => "s",
-      8 => "t"
-    }
+    typing_test = TermType.TypingTest.new(test_text)
 
-    status_map = %{
-      0 => :background,
-      1 => :background, 
-      2 => :background,
-      3 => :background,
-      4 => :background,
-      5 => :background,
-      6 => :background,
-      7 => :background,
-      8 => :background
-    }
+    letter_map =
+      test_text
+      |> String.split("", trim: true)
+      |> Enum.with_index()
+      |> Enum.reduce(%{}, fn {letter, index}, letter_map ->
+        Map.put(letter_map, index, letter)
+      end)
+
+    status_map = 
+      Enum.reduce(0..8, %{}, fn index, status_map -> 
+        Map.put(status_map, index, :background)
+      end)
 
     { 
       :ok,
