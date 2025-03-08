@@ -1,6 +1,11 @@
 # TermType
 
-**TODO: Add description**
+## Description
+
+This will be the server instance that will serve the API of a typing test
+backend. The server will connect through Web Sockets to the client (which can be
+written in any language, but because I want to make the client facing typing
+test on the terminal will be in go).
 
 ## Installation
 
@@ -18,4 +23,3 @@ end
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at <https://hexdocs.pm/term_type>.
-
