@@ -32,6 +32,7 @@ defmodule TermType.TypingTest do
 
     cond do
       correct == attempt -> {:correct, index + 1}
+      correct != attempt -> {:incorrect, index + 1}
     end 
   end
 end

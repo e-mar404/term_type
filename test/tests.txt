@@ -9,7 +9,7 @@ A typing test will :
   :background
 ✓ a correct attempt will show as correct on the status map with the updated
   cur_position
-- an incorrect attempt will show as incorrect on the status map with the updated
+✓ an incorrect attempt will show as incorrect on the status map with the updated
   cur_position
 - a backspace input will shown the previous letter as background on the status
   map with the updated cur_position
