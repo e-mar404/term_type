@@ -6,14 +6,14 @@ defmodule TermType.TypingTestTest do
 
     letter_map = %{
       0 => "t",
-        1 => "y", 
-        2 => "p",
-        3 => "e",
-        4 => " ",
-        5 => "t",
-        6 => "e",
-        7 => "s",
-        8 => "t"
+      1 => "y", 
+      2 => "p",
+      3 => "e",
+      4 => " ",
+      5 => "t",
+      6 => "e",
+      7 => "s",
+      8 => "t"
     }
 
     status_map = %{
@@ -41,30 +41,34 @@ defmodule TermType.TypingTestTest do
   test "create a test with given input", context do
     assert context.typing_test.letter_map == context.letter_map
     assert context.typing_test.status_map == context.status_map
+    assert context.typing_test.status == :in_progress
   end
 
   test "correct input as the first try", context do
     new_test = TermType.TypingTest.attempt(context.typing_test, "t")
     updated_status_map = Map.put(context.status_map, 0, :correct)
 
-    assert new_test.status_map == updated_status_map
     assert new_test.cur_index == 1
+    assert new_test.status == :in_progress
+    assert new_test.status_map == updated_status_map
   end
 
   test "incorrect input as the first try", context do
     new_test = TermType.TypingTest.attempt(context.typing_test, "f")
     updated_status_map = Map.put(context.status_map, 0, :incorrect)
 
-    assert new_test.status_map == updated_status_map
     assert new_test.cur_index == 1
+    assert new_test.status == :in_progress
+    assert new_test.status_map == updated_status_map
   end
 
   test "backspace as the first try", context do
     new_test = TermType.TypingTest.attempt(context.typing_test, "\b")
     updated_status_map = Map.put(context.status_map, 0, :background)
 
-    assert new_test.status_map == updated_status_map
     assert new_test.cur_index == 0
+    assert new_test.status == :in_progress
+    assert new_test.status_map == updated_status_map
   end
 
   test "mixed attempts", context do
@@ -80,7 +84,31 @@ defmodule TermType.TypingTestTest do
       |> Map.put(0, :correct)
       |> Map.put(1, :incorrect)
 
-    assert new_test.status_map == updated_status_map
     assert new_test.cur_index == 2
+    assert new_test.status == :in_progress
+    assert new_test.status_map == updated_status_map
+  end
+
+  test "get :complete when you finish a test", context do
+    new_test =
+      context.typing_test
+      |> TermType.TypingTest.attempt("t") 
+      |> TermType.TypingTest.attempt("y") 
+      |> TermType.TypingTest.attempt("p") 
+      |> TermType.TypingTest.attempt("e") 
+      |> TermType.TypingTest.attempt(" ") 
+      |> TermType.TypingTest.attempt("t") 
+      |> TermType.TypingTest.attempt("e") 
+      |> TermType.TypingTest.attempt("s") 
+      |> TermType.TypingTest.attempt("t") 
+
+    updated_status_map =
+      Enum.reduce(0..map_size(context.typing_test.status_map)-1, %{}, fn index, new_status_map ->
+        Map.put(new_status_map, index, :correct)  
+      end)
+
+    assert new_test.cur_index == 9
+    assert new_test.status == :complete
+    assert new_test.status_map == updated_status_map
   end
 end

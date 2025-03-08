@@ -1,5 +1,8 @@
 defmodule TermType.TypingTest do
-  defstruct cur_index: 0, letter_map: %{}, status_map: %{}
+  defstruct cur_index: 0, 
+            letter_map: %{}, 
+            status_map: %{}, 
+            status: :in_progress
 
   def new(initial_text) do
     letter_list = 
@@ -26,10 +29,18 @@ defmodule TermType.TypingTest do
       end
 
     new_status_map = Map.put(test.status_map, position_to_update, status)
+    
+    new_test_status = 
+      if position_to_update == map_size(test.letter_map) - 1 do
+        :complete
+      else
+        :in_progress
+      end
 
     %TermType.TypingTest{ test |
       cur_index: next_index,
-      status_map: new_status_map
+      status_map: new_status_map,
+      status: new_test_status
     }
   end
 

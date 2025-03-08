@@ -14,4 +14,4 @@ A typing test will :
 ✓ a backspace input will shown the previous letter as background on the status
   map with the updated cur_position
 ✓ mix of different correct, incorrect and backspace inputs
-- when the last input happens return :complete
+✓ when the last input happens return :complete
