@@ -66,4 +66,21 @@ defmodule TermType.TypingTestTest do
     assert new_test.status_map == updated_status_map
     assert new_test.cur_index == 0
   end
+
+  test "mixed attempts", context do
+    new_test =
+      context.typing_test
+      |> TermType.TypingTest.attempt("t") 
+      |> TermType.TypingTest.attempt("h") 
+      |> TermType.TypingTest.attempt("e") 
+      |> TermType.TypingTest.attempt("\b") 
+
+    updated_status_map =
+      context.status_map
+      |> Map.put(0, :correct)
+      |> Map.put(1, :incorrect)
+
+    assert new_test.status_map == updated_status_map
+    assert new_test.cur_index == 2
+  end
 end

@@ -19,7 +19,13 @@ defmodule TermType.TypingTest do
   def attempt(test, attempt) do
     {status, next_index} = check(test.letter_map, test.cur_index, attempt)
 
-    new_status_map = Map.put(test.status_map, test.cur_index, status)
+    position_to_update = 
+      case status do 
+        :background -> next_index 
+        _ -> test.cur_index 
+      end
+
+    new_status_map = Map.put(test.status_map, position_to_update, status)
 
     %TermType.TypingTest{ test |
       cur_index: next_index,
