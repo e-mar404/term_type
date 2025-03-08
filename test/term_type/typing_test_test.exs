@@ -18,14 +18,14 @@ defmodule TermType.TypingTestTest do
 
     status_map = %{
       0 => :background,
-        1 => :background, 
-        2 => :background,
-        3 => :background,
-        4 => :background,
-        5 => :background,
-        6 => :background,
-        7 => :background,
-        8 => :background
+      1 => :background, 
+      2 => :background,
+      3 => :background,
+      4 => :background,
+      5 => :background,
+      6 => :background,
+      7 => :background,
+      8 => :background
     }
 
     { 
@@ -45,70 +45,71 @@ defmodule TermType.TypingTestTest do
   end
 
   test "correct input as the first try", context do
-    new_test = TermType.TypingTest.attempt(context.typing_test, "t")
-    updated_status_map = Map.put(context.status_map, 0, :correct)
+    expected_status_map = Map.put(context.status_map, 0, :correct)
 
-    assert new_test.cur_index == 1
-    assert new_test.status == :in_progress
-    assert new_test.status_map == updated_status_map
+    expected_test = %TermType.TypingTest{ context.typing_test |
+      cur_index: 1,
+      status_map: expected_status_map
+    }
+    
+    test_typing_test(["t"], context.typing_test, expected_test)
   end
 
   test "incorrect input as the first try", context do
-    new_test = TermType.TypingTest.attempt(context.typing_test, "f")
-    updated_status_map = Map.put(context.status_map, 0, :incorrect)
+    expected_status_map = Map.put(context.status_map, 0, :incorrect)
 
-    assert new_test.cur_index == 1
-    assert new_test.status == :in_progress
-    assert new_test.status_map == updated_status_map
+    expected_test = %TermType.TypingTest{ context.typing_test |
+      cur_index: 1,
+      status_map: expected_status_map
+    }
+    
+    test_typing_test(["f"], context.typing_test, expected_test)
   end
 
   test "backspace as the first try", context do
-    new_test = TermType.TypingTest.attempt(context.typing_test, "\b")
-    updated_status_map = Map.put(context.status_map, 0, :background)
-
-    assert new_test.cur_index == 0
-    assert new_test.status == :in_progress
-    assert new_test.status_map == updated_status_map
+    test_typing_test(["\b"], context.typing_test, context.typing_test)
   end
 
   test "mixed attempts", context do
-    new_test =
-      context.typing_test
-      |> TermType.TypingTest.attempt("t") 
-      |> TermType.TypingTest.attempt("h") 
-      |> TermType.TypingTest.attempt("e") 
-      |> TermType.TypingTest.attempt("\b") 
+    expected_status_map =
+      [:correct, :incorrect]
+      |> Enum.with_index()
+      |> Enum.reduce(context.status_map, fn {status, index}, new_status_map ->
+          Map.put(new_status_map, index, status)  
+        end)
 
-    updated_status_map =
-      context.status_map
-      |> Map.put(0, :correct)
-      |> Map.put(1, :incorrect)
-
-    assert new_test.cur_index == 2
-    assert new_test.status == :in_progress
-    assert new_test.status_map == updated_status_map
+    expected_test = %TermType.TypingTest{ context.typing_test |
+      cur_index: 2,
+      status_map: expected_status_map
+    }
+    
+    test_typing_test(["t", "h", "e", "\b"], context.typing_test, expected_test)
   end
 
   test "get :complete when you finish a test", context do
-    new_test =
-      context.typing_test
-      |> TermType.TypingTest.attempt("t") 
-      |> TermType.TypingTest.attempt("y") 
-      |> TermType.TypingTest.attempt("p") 
-      |> TermType.TypingTest.attempt("e") 
-      |> TermType.TypingTest.attempt(" ") 
-      |> TermType.TypingTest.attempt("t") 
-      |> TermType.TypingTest.attempt("e") 
-      |> TermType.TypingTest.attempt("s") 
-      |> TermType.TypingTest.attempt("t") 
+    expected_status_map =
+      Enum.map(0..8, fn _ -> :correct end)
+      |> Enum.with_index()
+      |> Enum.reduce(context.status_map, fn {status, index}, new_status_map ->
+          Map.put(new_status_map, index, status)  
+        end)
 
-    updated_status_map =
-      Enum.reduce(0..map_size(context.typing_test.status_map)-1, %{}, fn index, new_status_map ->
-        Map.put(new_status_map, index, :correct)  
+    expected_test = %TermType.TypingTest{ context.typing_test |
+      status: :complete,
+      cur_index: 9,
+      status_map: expected_status_map
+    }
+    
+    input = ["t", "y", "p", "e", " ", "t", "e", "s", "t"]
+    test_typing_test(input, context.typing_test, expected_test)
+  end
+
+  defp test_typing_test(input, initial_test, expected_test) do
+    new_test = 
+      Enum.reduce(input, initial_test, fn attempt, new_test ->
+        TermType.TypingTest.attempt(new_test, attempt)
       end)
 
-    assert new_test.cur_index == 9
-    assert new_test.status == :complete
-    assert new_test.status_map == updated_status_map
+    assert new_test == expected_test
   end
 end
