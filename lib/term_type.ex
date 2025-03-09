@@ -1,0 +1,3 @@
+defmodule TermType do
+  
+end
