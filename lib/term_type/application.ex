@@ -5,6 +5,7 @@ defmodule TermType.Application do
   def start(_type, _args) do
     children = [
       {Phoenix.PubSub, name: TermType.PubSub},
+      TermType.TextBank,
       TermTypeWeb.Endpoint
     ]
 
